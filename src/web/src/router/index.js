@@ -7,6 +7,7 @@ import Form from "../components/Form";
 import Login from "../views/Login";
 import LoginComplete from "../views/LoginComplete";
 import Profile from "../views/Profile";
+import Maps from "../views/Maps";
 import store from "../store";
 import SitesForm from "../components/Sites";
 
@@ -92,6 +93,14 @@ const routes = [
     component: SitesGrid,
     meta: {
       requiresAuth: false
+    },
+  },
+  {
+    path: "/maps",
+    name: "Maps",
+    component: Maps,
+    meta: {
+      requiresAuth: true
     },
   },
   {

@@ -5,6 +5,7 @@ import auth from "./auth";
 import profile from "./profile";
 import boats from "./boats";
 import alerts from "./alerts";
+import users from "./users";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -48,5 +49,5 @@ export default new Vuex.Store({
     search: state => state.search,
     showAppSidebar: state => state.showAppSidebar,
   },
-  modules: { auth, profile, boats, alerts }
+  modules: { auth, profile, boats, alerts, users }
 });

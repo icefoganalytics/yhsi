@@ -35,7 +35,7 @@
       style="left: 0; border-bottom: 3px #f3b228 solid"
     >
       <!-- <v-icon color="#f3b228" class="mr-5">{{ applicationIcon }}</v-icon> -->
-      <img src="/yukon.svg" style="margin: -8px 155px 0 0" height="44" />
+      <img src="/yukon.svg" style="margin: -8px 85px 0 0" height="44" />
       <v-toolbar-title>
         <span style="font-weight: 700">{{ applicationName }}</span>
 
@@ -79,6 +79,12 @@
             </v-list-item>
             <v-list-item to="/places">
               <v-list-item-title>Places</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/burials">
+              <v-list-item-title>Burials</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/people">
+              <v-list-item-title>People</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -146,10 +152,9 @@
               <notifier ref="notifier"></notifier>
             -->
             <router-view></router-view>
-            <RequestAlert/>
+            <RequestAlert />
           </v-col>
         </v-row>
-        
       </v-container>
     </v-main>
 
@@ -194,21 +199,18 @@ export default {
     applicationName: config.applicationName,
     applicationIcon: config.applicationIcon,
     sections: config.sections,
-    hasSidebar: config.hasSidebar,
-    hasSidebarClosable: config.hasSidebarClosable,
+    hasSidebar: false,
+    hasSidebarClosable: false,
     currentId: 0,
   }),
   created: async function () {
-    await store.dispatch("checkAuthentication");
     store.dispatch("setAppSidebar", this.$route.path.startsWith("/sites/"));
     this.hasSidebar = this.$route.path.startsWith("/sites/");
     this.currentId = this.$route.params.id;
 
-    this.hasSidebar = true;
     await store.dispatch("checkAuthentication");
   },
   watch: {
-
     isAuthenticated: function (val) {
       if (!val) this.hasSidebar = false;
       else this.hasSidebar = store.getters.showAppSidebar;
@@ -235,14 +237,6 @@ export default {
       window.location = LOGOUT_URL;
     },
     isSites(route, chooser) {
-       if(chooser)
-         return (route.includes('sites') || route.includes('photos') || route.includes('users') 
-               || route.includes('photo-owners') || route.includes('communities')) ? 'siteslp' :  '';
-       else
-         return (route.includes('sites') || route.includes('photos') || route.includes('users') 
-               || route.includes('photo-owners') || route.includes('communities')) ? 'sitesnp' :  '';
-      //this function helps to show certain classes depending on the route
-      /*
       if (chooser)
         return route.includes("sites/") || route.includes("photos")
           ? "siteslp"
@@ -251,7 +245,6 @@ export default {
         return route.includes("sites/") || route.includes("photos")
           ? "sitesnp"
           : "";
-          */
     },
     showHistory() {
       this.$refs.historySidebar.show();

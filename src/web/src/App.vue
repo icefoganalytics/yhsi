@@ -9,21 +9,50 @@
       v-bind:class="{ 'd-none': !hasSidebar }"
     >
       <v-list dense nav style="" class="mt-4">
-        <v-list-item
-          link
-          nav
-          v-for="section in sections"
-          :title="section.name"
-          :to="section.makeUrl(currentId)"
-          :key="section.name"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ section.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ section.name }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="section in sections">
+          <v-list-group
+            v-if="section.sections"
+            :key="section.name"
+            :group="section.group"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>{{ section.name }}</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="subSection in section.sections"
+              class="ml-4"
+              link
+              nav
+              :title="subSection.name"
+              :to="subSection.makeUrl(currentId)"
+              :key="subSection.name"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ subSection.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ subSection.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+          <v-list-item
+            v-else
+            link
+            nav
+            :title="section.name"
+            :to="section.makeUrl(currentId)"
+            :key="section.name"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ section.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ section.name }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
 

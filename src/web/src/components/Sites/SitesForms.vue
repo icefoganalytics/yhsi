@@ -22,23 +22,44 @@
       v-on:showAPIMessages="showAPIMessages"
     />
     <div>
-      <router-view
-        id="sites-router"
-        v-on:showError="showError"
-        v-on:showSuccess="showSuccess"
-        v-on:showAPIMessages="showAPIMessages"
-      />
+      <Summary />
+      <Location />
+      <Dates />
+      <Themes />
+      <Associations />
+      <LegalAndZoning />
+      <Photos />
+      <Management />
+      <Description />
     </div>
   </div>
 </template>
 
 <script>
-import PrintDialog from "./SitesGrid/PrintDialog";
+import Associations from "@/components/Sites/SitesForms/Associations"
+import Dates from "@/components/Sites/SitesForms/Dates"
+import Description from "@/components/Sites/SitesForms/Description"
+import LegalAndZoning from "@/components/Sites/SitesForms/LegalAndZoning"
+import Location from "@/components/Sites/SitesForms/Location"
+import Management from "@/components/Sites/SitesForms/Management"
+import Photos from "@/components/Sites/SitesForms/Photos"
+import PrintDialog from "@/components/Sites/SitesGrid/PrintDialog"
+import Summary from "@/components/Sites/SitesForms/Summary"
+import Themes from "@/components/Sites/SitesForms/Themes"
 
 export default {
-  name: "sitesForm",
+  name: "SitesForms",
   components: {
+    Associations,
+    Dates,
+    Description,
+    LegalAndZoning,
+    Location,
+    Management,
+    Photos,
     PrintDialog,
+    Summary,
+    Themes,
   },
   data: () => ({
     site: "site name",
@@ -48,24 +69,23 @@ export default {
   created() {},
   methods: {
     showDialog() {
-      this.dialog = true;
+      this.dialog = true
     },
     closeDialog() {
-      this.dialog = false;
+      this.dialog = false
     },
     showError: function (msg) {
-      this.$emit("showError", msg);
+      this.$emit("showError", msg)
     },
     showSuccess: function (msg) {
-      this.$emit("showSuccess", msg);
+      this.$emit("showSuccess", msg)
     },
     showAPIMessages: function (msg) {
-      this.$emit("showAPIMessages", msg);
+      this.$emit("showAPIMessages", msg)
     },
   },
-};
+}
 </script>
-
 
 <style scoped>
 .list-menu {

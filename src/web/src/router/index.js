@@ -9,18 +9,8 @@ import LoginComplete from "../views/LoginComplete";
 import Profile from "../views/Profile";
 import Maps from "../views/Maps";
 import store from "../store";
-import SitesForm from "../components/Sites";
-
-import Summary from "../components/Sites/SitesForms/Summary";
-import Location from "../components/Sites/SitesForms/Location";
-import Dates from "../components/Sites/SitesForms/Dates";
-import Themes from "../components/Sites/SitesForms/Themes";
-import Associations from "../components/Sites/SitesForms/Associations";
-import LegalAndZoning from "../components/Sites/SitesForms/LegalAndZoning";
-import Photos from "../components/Sites/SitesForms/Photos";
+import SitesForms from "@/components/Sites/SitesForms";
 import MainPhotos from "../components/MainPhotos";
-import Management from "../components/Sites/SitesForms/Management";
-import Description from "../components/Sites/SitesForms/Description";
 import SitesGrid from "../components/Sites/SitesGrid";
 import PhotosGrid from "../components/MainPhotos/PhotosGrid";
 import Feature from "../components/MainPhotos/PhotosComponents/Feature";
@@ -192,48 +182,7 @@ const routes = [
   {
     path: "/sites/:id",
     name: "SitesForm",
-    component: SitesForm,
-    meta: {
-      requiresAuth: false
-    },
-    children: [
-      {
-        path: "summary",
-        component: Summary
-      },
-      {
-        path: "location",
-        component: Location
-      },
-      {
-        path: "dates_&_condition",
-        component: Dates
-      },
-      {
-        path: "themes_&_function",
-        component: Themes
-      },
-      {
-        path: "associations",
-        component: Associations
-      },
-      {
-        path: "legal_&_zoning",
-        component: LegalAndZoning
-      },
-      {
-        path: "photos",
-        component: Photos
-      },
-      {
-        path: "management",
-        component: Management
-      },
-      {
-        path: "description",
-        component: Description
-      }
-    ]
+    component: SitesForms,
   },
   {
     path: "/photos/edit/:id",

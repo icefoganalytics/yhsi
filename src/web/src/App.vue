@@ -146,10 +146,6 @@ import RequestAlert from "./components/RequestAlert.vue";
 export default {
   name: "App",
   components: { AppSidebar, RequestAlert },
-  computed: {
-    ...mapGetters(["isAuthenticated"]),
-    ...mapGetters({ username: "fullName" })
-  },
   data: () => ({
     dialog: false,
     drawer: null,
@@ -160,6 +156,10 @@ export default {
     applicationName: config.applicationName,
     applicationIcon: config.applicationIcon,
   }),
+  computed: {
+    ...mapGetters(["isAuthenticated"]),
+    ...mapGetters({ username: "fullName" })
+  },
   async mounted() {
     await store.dispatch("checkAuthentication");
   },

@@ -20,12 +20,12 @@
           </template>
           <v-list-item
             v-for="subSection in section.sections"
+            :key="subSection.name"
             class="ml-4"
             link
             nav
             :title="subSection.name"
             :to="subSection.makeUrl(currentId)"
-            :key="subSection.name"
           >
             <v-list-item-icon>
               <v-icon>{{ subSection.icon }}</v-icon>
@@ -37,11 +37,11 @@
         </v-list-group>
         <v-list-item
           v-else
+          :key="section.name"
           link
           nav
           :title="section.name"
           :to="section.makeUrl(currentId)"
-          :key="section.name"
         >
           <v-list-item-icon>
             <v-icon>{{ section.icon }}</v-icon>
@@ -125,14 +125,14 @@ export default {
     ...mapGetters(["showAppSidebar"]),
     sections: () => SECTIONS,
   },
-  async mounted() {
-    await this.setShowAppSidebar(this.$route.path)
-    this.currentId = this.$route.params.id
-  },
   watch: {
     "$route.path"(value) {
       this.setShowAppSidebar(value)
     },
+  },
+  async mounted() {
+    await this.setShowAppSidebar(this.$route.path)
+    this.currentId = this.$route.params.id
   },
   methods: {
     setShowAppSidebar(path) {

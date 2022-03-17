@@ -58,23 +58,74 @@
 <script>
 import { mapGetters } from "vuex"
 
-import * as config from "@/config"
 import store from "@/store"
+
+const SECTIONS = [
+  {
+    name: "Sites",
+    group: "/sites",
+    sections: [
+      {
+        name: "Summary",
+        icon: "mdi-note-text-outline",
+        makeUrl: (id) => `/sites/${id}/summary`,
+      },
+      {
+        name: "Location",
+        icon: "mdi-map-check",
+        makeUrl: (id) => `/sites/${id}/location`,
+      },
+      {
+        name: "Dates & Condition",
+        icon: "mdi-calendar-range",
+        makeUrl: (id) => `/sites/${id}/dates_&_condition`,
+      },
+      {
+        name: "Themes & Function",
+        icon: "mdi-shape",
+        makeUrl: (id) => `/sites/${id}/themes_&_function`,
+      },
+      {
+        name: "Associations",
+        icon: "mdi-account-group",
+        makeUrl: (id) => `/sites/${id}/associations`,
+      },
+      {
+        name: "Legal & Zoning",
+        icon: "mdi-script-text-outline",
+        makeUrl: (id) => `/sites/${id}/legal_&_zoning`,
+      },
+      {
+        name: "Photos (combined)",
+        icon: "mdi-image",
+        makeUrl: (id) => `/sites/${id}/photos`,
+      },
+      {
+        name: "Management",
+        icon: "mdi-hammer-wrench",
+        makeUrl: (id) => `/sites/${id}/management`,
+      },
+      {
+        name: "Description",
+        icon: "mdi-alphabetical",
+        makeUrl: (id) => `/sites/${id}/description`,
+      },
+    ],
+  },
+]
 
 export default {
   name: "AppSidebar",
-  computed: {
-    ...mapGetters(["showAppSidebar"]),
-  },
   data() {
     return {
-      hasSidebarClosable: config.hasSidebarClosable,
-      sections: config.sections,
       currentId: 0,
     }
   },
+  computed: {
+    ...mapGetters(["showAppSidebar"]),
+    sections: () => SECTIONS,
+  },
   async mounted() {
-    await store.dispatch("checkAuthentication")
     await this.setShowAppSidebar(this.$route.path)
     this.currentId = this.$route.params.id
   },
@@ -85,7 +136,6 @@ export default {
   },
   methods: {
     setShowAppSidebar(path) {
-      console.log("path", path)
       if (path.startsWith("/sites/")) {
         return store.dispatch("setShowAppSidebar", true)
       }

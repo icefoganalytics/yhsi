@@ -1,6 +1,5 @@
 export const applicationName = "Yukon Historic Sites"
 export const applicationIcon = "mdi-cash-register"
-export const hasSidebar = true
 export const hasSidebarClosable = false
 export const environment = process.env.NODE_ENV
 export const apiBaseUrl =

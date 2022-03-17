@@ -27,6 +27,9 @@ export default new Vuex.Store({
     },
     SET_SEARCH(state, value) {
       state.search = value;
+    },
+    SET_SHOWAPPSIDEBAR(state, value) {
+      state.showAppSidebar = value
     }
   },
   actions: {
@@ -40,14 +43,14 @@ export default new Vuex.Store({
     setSearch({ commit }, value) {
       commit("SET_SEARCH", value)
     },
-    setAppSidebar(state, value) {
-      state.state.showAppSidebar = value;
+    setShowAppSidebar({ commit }, value) {
+      return commit("SET_SHOWAPPSIDEBAR", value)
     }
   },
   getters: {
     siteHistory: state => state.siteHistory,
     search: state => state.search,
-    showAppSidebar: state => state.showAppSidebar,
+    showAppSidebar: (state, getters) => state.showAppSidebar && getters.isAuthenticated,
   },
   modules: { auth, profile, boats, alerts, users }
 });

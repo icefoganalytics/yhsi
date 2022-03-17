@@ -421,8 +421,6 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   var requiresAuth = to.meta.requiresAuth || false;
 
-  store.dispatch("setAppSidebar", to.path.startsWith("/sites/"))
-
   if (!requiresAuth) {
     return next();
   }

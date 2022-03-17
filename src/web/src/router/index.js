@@ -1,5 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import goTo from 'vuetify/lib/services/goto'
+
 import Home from "../components/Home.vue";
 import Dashboard from "../components/Dashboard.vue";
 import NotFound from "../views/NotFound.vue";
@@ -367,18 +369,14 @@ const router = new VueRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      console.log("savedPosition", savedPosition)
-      return savedPosition
-    } else if (to.hash) {
-      console.log("to.hash", to.hash)
-      return {
-        selector: to.hash,
-        behavior: "smooth",
-        // offset: { x: 50, y: -50 }
-      }
-    } else {
-      return { x: 0, y: 0 }
+      return goTo(savedPosition.y)
     }
+
+    if (to.hash) {
+      return goTo(to.hash, { offset: 75 })
+    }
+
+    return goTo(0)
   },
 })
 

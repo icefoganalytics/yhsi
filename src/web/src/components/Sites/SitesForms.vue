@@ -22,15 +22,15 @@
       v-on:showAPIMessages="showAPIMessages"
     />
     <div>
-      <Summary />
-      <Location />
-      <Dates />
-      <Themes />
-      <Associations />
-      <LegalAndZoning />
-      <Photos />
-      <Management />
-      <Description />
+      <Summary id="summary" />
+      <Location id="location" />
+      <Dates id="dates-and-condition"/>
+      <Themes id="themes-and-function"/>
+      <Associations id="associations"/>
+      <LegalAndZoning id="legal-and-zoning"/>
+      <Photos id="photos"/>
+      <Management id="management"/>
+      <Description id="description"/>
     </div>
   </div>
 </template>

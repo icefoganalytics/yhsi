@@ -364,8 +364,23 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
-});
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      console.log("savedPosition", savedPosition)
+      return savedPosition
+    } else if (to.hash) {
+      console.log("to.hash", to.hash)
+      return {
+        selector: to.hash,
+        behavior: "smooth",
+        // offset: { x: 50, y: -50 }
+      }
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
+})
 
 router.beforeEach(async (to, from, next) => {
   var requiresAuth = to.meta.requiresAuth || false;

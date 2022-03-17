@@ -108,12 +108,9 @@
       <div v-else>
         <router-link to="/sign-in">Sign in</router-link>
       </div>
-
-      <!-- <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"></v-app-bar-nav-icon> -->
     </v-app-bar>
 
-    <v-main v-bind:style="{ 'padding-left: 33px !important': !showAppSidebar }">
-      <!-- Provides the application the proper gutter -->
+    <v-main>
       <v-container fluid :class="`${isSites($route.path, true)}`">
         <v-row>
           <v-col :class="`${isSites($route.path, false)}`">
@@ -139,7 +136,6 @@
 <script>
 import { mapGetters } from "vuex";
 
-import router from "./router";
 import store from "./store";
 import * as config from "./config";
 import { LOGOUT_URL } from "./urls";
@@ -151,7 +147,7 @@ export default {
   name: "App",
   components: { AppSidebar, RequestAlert },
   computed: {
-    ...mapGetters(["isAuthenticated", "showAppSidebar"]),
+    ...mapGetters(["isAuthenticated"]),
     ...mapGetters({ username: "fullName" })
   },
   data: () => ({
@@ -168,15 +164,6 @@ export default {
     await store.dispatch("checkAuthentication");
   },
   methods: {
-    nav: function (location) {
-      router.push(location);
-    },
-    toggleHeader: function () {
-      this.headerShow = !this.headerShow;
-    },
-    toggleMenu: function () {
-      this.menuShow = !this.menuShow;
-    },
     signOut: function () {
       window.location = LOGOUT_URL;
     },

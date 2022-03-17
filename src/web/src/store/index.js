@@ -13,7 +13,6 @@ export default new Vuex.Store({
     loadingClass: "d-none",
     siteHistory: [],
     search: "",
-    showAppSidebar: false
   },
   mutations: {
     SET_LOADING(state, value) {
@@ -28,9 +27,6 @@ export default new Vuex.Store({
     SET_SEARCH(state, value) {
       state.search = value;
     },
-    SET_SHOWAPPSIDEBAR(state, value) {
-      state.showAppSidebar = value
-    }
   },
   actions: {
     load({ commit }) {
@@ -43,14 +39,10 @@ export default new Vuex.Store({
     setSearch({ commit }, value) {
       commit("SET_SEARCH", value)
     },
-    setShowAppSidebar({ commit }, value) {
-      return commit("SET_SHOWAPPSIDEBAR", value)
-    }
   },
   getters: {
     siteHistory: state => state.siteHistory,
     search: state => state.search,
-    showAppSidebar: (state, getters) => state.showAppSidebar && getters.isAuthenticated,
   },
   modules: { auth, profile, boats, alerts, users }
 });

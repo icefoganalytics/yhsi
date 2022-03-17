@@ -185,6 +185,7 @@ const routes = [
     path: "/sites/:id",
     name: "SitesForm",
     component: SitesForms,
+    props: true,
   },
   {
     path: "/photos/edit/:id",

@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <AppSidebar />
     <v-app-bar
       app
       color="#fff"
@@ -140,12 +139,11 @@ import store from "./store";
 import * as config from "./config";
 import { LOGOUT_URL } from "./urls";
 
-import AppSidebar from '@/components/AppSidebar'
 import RequestAlert from "./components/RequestAlert.vue";
 
 export default {
   name: "App",
-  components: { AppSidebar, RequestAlert },
+  components: { RequestAlert },
   data: () => ({
     dialog: false,
     drawer: null,

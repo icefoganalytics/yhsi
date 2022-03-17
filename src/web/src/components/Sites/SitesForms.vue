@@ -1,36 +1,39 @@
 <template>
-  <div>
-    <v-app-bar color="primary" dark flat>
-      <v-btn color="primary" to="/sites" exact>
-        <v-icon>mdi-arrow-left-drop-circle</v-icon>
-        <div class="ml-2">Back to Sites</div>
-      </v-btn>
-      <v-spacer></v-spacer>
-      {{ siteName }}
-      <v-spacer></v-spacer>
-      <v-btn color="primary" @click="showDialog()">
-        <v-icon class="mr-2">mdi-printer</v-icon>
-        <div>Print Site</div>
-      </v-btn>
-    </v-app-bar>
-    <PrintDialog
-      :dialog="dialog"
-      :sitename="siteName"
-      @closeDialog="closeDialog"
-      v-on:showError="showError"
-      v-on:showSuccess="showSuccess"
-      v-on:showAPIMessages="showAPIMessages"
-    />
+  <div class="d-flex">
+    <SitesFormsSidebar :site-id="id" />
     <div>
-      <Summary id="summary" />
-      <Location id="location" />
-      <Dates id="dates-and-condition"/>
-      <Themes id="themes-and-function"/>
-      <Associations id="associations"/>
-      <LegalAndZoning id="legal-and-zoning"/>
-      <Photos id="photos"/>
-      <Management id="management"/>
-      <Description id="description"/>
+      <v-app-bar color="primary" dark flat>
+        <v-btn color="primary" to="/sites" exact>
+          <v-icon>mdi-arrow-left-drop-circle</v-icon>
+          <div class="ml-2">Back to Sites</div>
+        </v-btn>
+        <v-spacer></v-spacer>
+        {{ siteName }}
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="showDialog()">
+          <v-icon class="mr-2">mdi-printer</v-icon>
+          <div>Print Site</div>
+        </v-btn>
+      </v-app-bar>
+      <PrintDialog
+        :dialog="dialog"
+        :sitename="siteName"
+        @closeDialog="closeDialog"
+        v-on:showError="showError"
+        v-on:showSuccess="showSuccess"
+        v-on:showAPIMessages="showAPIMessages"
+      />
+      <div>
+        <Summary id="summary" />
+        <Location id="location" />
+        <Dates id="dates-and-condition" />
+        <Themes id="themes-and-function" />
+        <Associations id="associations" />
+        <LegalAndZoning id="legal-and-zoning" />
+        <Photos id="photos" />
+        <Management id="management" />
+        <Description id="description" />
+      </div>
     </div>
   </div>
 </template>
@@ -44,11 +47,12 @@ import Location from "@/components/Sites/SitesForms/Location"
 import Management from "@/components/Sites/SitesForms/Management"
 import Photos from "@/components/Sites/SitesForms/Photos"
 import PrintDialog from "@/components/Sites/SitesGrid/PrintDialog"
+import SitesFormsSidebar from "@/components/Sites/SitesFormsSidebar"
 import Summary from "@/components/Sites/SitesForms/Summary"
 import Themes from "@/components/Sites/SitesForms/Themes"
 
 export default {
-  name: "SitesForms",
+  name: "SiteForms",
   components: {
     Associations,
     Dates,
@@ -58,8 +62,15 @@ export default {
     Management,
     Photos,
     PrintDialog,
+    SitesFormsSidebar,
     Summary,
     Themes,
+  },
+  props: {
+    id: {
+      type: [Number, String],
+      required: true,
+    }
   },
   data: () => ({
     site: "site name",

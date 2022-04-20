@@ -250,54 +250,69 @@ export class PlaceService {
 		return this.db('place').insert(item).returning<Place>(PLACE_FIELDS);
 	}
 
-	updateRelations(id: number, attributes: PlainObject) {
-		return Promise.resolve(attributes).then(async (attrs) => {
-			if (attrs.hasOwnProperty('associations')) {
-				await this.assocationService.upsertFor(id, attrs['associations']);
+	updateRelations(placeId: number, place: Place): Promise<void> {
+		return new Promise(async (resolve, reject) => {
+			if (place.associations !== undefined) {
+				await this.assocationService
+					.upsertFor(placeId, place.associations)
+					.catch(reject);
 			}
-			if (attrs.hasOwnProperty('constructionPeriods')) {
-				await this.constructionPeriodService.upsertFor(
-					id,
-					attrs['constructionPeriods']
-				);
+			if (place.constructionPeriods !== undefined) {
+				await this.constructionPeriodService
+					.upsertFor(placeId, place.constructionPeriods)
+					.catch(reject);
 			}
-			if (attrs.hasOwnProperty('dates')) {
-				await this.dateService.upsertFor(id, attrs['dates']);
+			if (place.dates !== undefined) {
+				await this.dateService.upsertFor(placeId, place.dates).catch(reject);
 			}
-			if (attrs.hasOwnProperty('firstNationAssociations')) {
-				await this.firstNationAssociationService.upsertFor(
-					id,
-					attrs['firstNationAssociations']
-				);
+			if (place.firstNationAssociations !== undefined) {
+				await this.firstNationAssociationService
+					.upsertFor(placeId, place.firstNationAssociations)
+					.catch(reject);
 			}
-			if (attrs.hasOwnProperty('functionalUses')) {
-				await this.functionalUseService.upsertFor(id, attrs['functionalUses']);
+			if (place.functionalUses !== undefined) {
+				await this.functionalUseService
+					.upsertFor(placeId, place.functionalUses)
+					.catch(reject);
 			}
-			if (attrs.hasOwnProperty('historicalPatterns')) {
-				await this.historicalPatternService.upsertFor(
-					id,
-					attrs['historicalPatterns']
-				);
+			if (place.historicalPatterns !== undefined) {
+				await this.historicalPatternService
+					.upsertFor(placeId, place.historicalPatterns)
+					.catch(reject);
 			}
-			if (attrs.hasOwnProperty('names')) {
-				await this.nameService.upsertFor(id, attrs['names']);
+			if (place.names !== undefined) {
+				await this.nameService.upsertFor(placeId, place.names).catch(reject);
 			}
-			if (attrs.hasOwnProperty('themes')) {
-				await this.themeService.upsertFor(id, attrs['themes']);
+			if (place.ownerships !== undefined) {
+				await this.ownershipService
+					.upsertFor(placeId, place.ownerships)
+					.catch(reject);
 			}
-			return attrs;
+			if (place.previousOwnerships !== undefined) {
+				await this.previousOwnershipService
+					.upsertFor(placeId, place.previousOwnerships)
+					.catch(reject);
+			}
+			if (place.themes !== undefined) {
+				await this.themeService.upsertFor(placeId, place.themes).catch(reject);
+			}
+
+			return resolve();
 		});
 	}
 
 	update(id: number, attributes: PlainObject): Promise<Place | undefined> {
-		return Promise.resolve(attributes)
-			.then((attrs) => this.updateRelations(id, attrs))
-			.then(Place.stripOutNonColumnAttributes)
-			.then(Place.encodeCommaDelimitedArrayColumns)
-			.then((encodedAttributes) => {
-				if (isEmpty(encodedAttributes)) return;
+		return new Promise(async (resolve, reject) => {
+			const place = new Place(attributes);
+			await this.updateRelations(id, place).catch(reject);
 
-				return this.db('place').where({ id }).update(encodedAttributes);
+			return resolve(place);
+		})
+			.then((place) => {
+				const preparedAttributes = place.toDbObject();
+				if (isEmpty(preparedAttributes)) return;
+
+				return this.db('place').where({ id }).update(preparedAttributes);
 			})
 			.then(() => {
 				return this.getById(id).then(({ place, relationships }) => {

@@ -1,8 +1,20 @@
 import { isString, pick } from 'lodash';
 
-import { HistoricalPattern } from './historical-pattern';
-import { Name } from './name';
-import { PlainObject } from './simple-types';
+import {
+	Association,
+	ConstructionPeriod,
+	Date,
+	FirstNationAssociation,
+	FunctionalUse,
+	HistoricalPattern,
+	Name,
+	Ownership,
+	PlainObject,
+	PreviousOwnership,
+	Theme,
+} from '.';
+
+import { Contact, Description, RevisionLog, WebLink } from '../data';
 
 export class Place {
 	id?: number;
@@ -24,7 +36,6 @@ export class Place {
 	groupYHSI?: string;
 	hasPendingChanges?: boolean;
 	hectareArea?: string;
-	historicalPatterns?: HistoricalPattern[];
 	isPubliclyAccessible?: boolean;
 	jurisdiction?: number;
 	lAGroup?: string;
@@ -37,7 +48,6 @@ export class Place {
 	mailingCountry?: string;
 	mailingPostalCode?: string;
 	mailingProvince?: string;
-	names?: Name[];
 	nTSMapSheet?: string;
 	otherCommunity?: string;
 	otherLocality?: string;
@@ -71,7 +81,25 @@ export class Place {
 	yHSThemes?: string;
 	zoning?: string;
 
-	static FIELDS: ReadonlyArray<string> = Object.freeze([
+	// Associations
+	associations?: Association[];
+	constructionPeriods?: ConstructionPeriod[];
+	contacts?: Contact[];
+	dates?: Date[];
+	descriptions?: Description[];
+	firstNationAssociations?: FirstNationAssociation[];
+	functionalUses?: FunctionalUse[];
+	historicalPatterns?: HistoricalPattern[];
+	names?: Name[];
+	ownerships?: Ownership[];
+	previousOwnerships?: PreviousOwnership[];
+	revisionLogs?: RevisionLog[];
+	themes?: Theme[];
+	webLinks?: WebLink[];
+
+	[key: string]: any;
+
+	private fields: ReadonlyArray<string> = Object.freeze([
 		'id',
 		'block',
 		'bordenNumber',
@@ -142,6 +170,28 @@ export class Place {
 		'siteCategories',
 	]);
 
+	constructor(attributes: PlainObject) {
+		Object.entries(attributes).forEach(([key, value]) => {
+			if (Place.COMMA_DELIMITED_ARRAY_COLUMNS.includes(key)) {
+				this[key] = Place.encodeCommaDelimitedArray(value);
+			} else {
+				this[key] = value;
+			}
+		});
+	}
+
+	toDbObject(): PlainObject {
+		const dbObject: PlainObject = {};
+		this.fields.forEach((field) => {
+			if (field === 'id') {
+				// drop the id column
+			} else if (this[field] !== undefined) {
+				dbObject[field] = this[field];
+			}
+		});
+		return dbObject;
+	}
+
 	static encodeCommaDelimitedArray(
 		value: undefined | null | string | string[]
 	): string | null {
@@ -166,19 +216,8 @@ export class Place {
 		return value.split(',');
 	}
 
-	static encodeCommaDelimitedArrayColumns(object: PlainObject) {
-		Place.COMMA_DELIMITED_ARRAY_COLUMNS.forEach((column) => {
-			if (!object.hasOwnProperty(column)) return;
-
-			object[column] = Place.encodeCommaDelimitedArray(object[column]);
-		});
-
-		return object;
-	}
-
 	static decodeCommaDelimitedArrayColumns(object: PlainObject) {
-		if (!object)
-			return object;
+		if (!object) return object;
 
 		Place.COMMA_DELIMITED_ARRAY_COLUMNS.forEach((column) => {
 			if (!object.hasOwnProperty(column)) return;
@@ -187,9 +226,5 @@ export class Place {
 		});
 
 		return object;
-	}
-
-	static stripOutNonColumnAttributes(object: PlainObject) {
-		return pick(object, Place.FIELDS);
 	}
 }

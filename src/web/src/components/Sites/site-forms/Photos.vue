@@ -12,17 +12,6 @@
       Photos
     </v-card-title>
     <v-card-text tag="section">
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="categoryOfProperty"
-            label="Category of Property"
-            dense
-            outlined
-            background-color="white"
-          />
-        </v-col>
-      </v-row>
       <v-card
         class="default mb-0"
         tag="section"
@@ -36,7 +25,7 @@
         <v-card-text tag="form">
           <v-row>
             <v-col
-              v-for="(item, index) in photos"
+              v-for="(item, index) in place.photos"
               :key="`photo-${index + 1}`"
               cols="6"
             >
@@ -133,63 +122,53 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn
-        class="my-0"
-        color="primary"
-        @click="save"
-      >
-        Save
-      </v-btn>
+      <v-tooltip left>
+        <template #activator="{ on }">
+          <div v-on="on">
+            <v-btn
+              class="my-0"
+              color="primary"
+              disabled
+            >
+              Save
+            </v-btn>
+          </div>
+        </template>
+        <span> Photo saving has not yet been implemented.</span>
+      </v-tooltip>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import axios from 'axios';
+import { mapGetters } from 'vuex';
 
-import store from '@/store';
-import { PLACE_URL } from '@/urls';
-
-/* Important**, field data that was not found on the swaggerhub api docs provided was assumed to be in development, hence, some placeholder variables were created. */
 export default {
   name: 'Photos',
-  data: () => ({
-    valid: false,
-    generalRules: [
-      (v) => !!v || 'This input is required',
-      (v) => v.length <= 20 || 'This input must be less than 20 characters',
-    ],
-
-    photos: [],
-
-    /* Placeholder variables below this line **Read above** */
-    categoryOfProperty: '',
-  }),
-  created: function () {
-    let id = this.$route.params.id;
-
-    axios
-      .get(`${PLACE_URL}/${id}`)
-      .then((resp) => {
-        this.fields = resp.data.data;
-        this.photos = resp.data.relationships.photos.data;
-        store.dispatch('addSiteHistory', resp.data.data);
-      })
-      .catch((error) => console.error(error));
+  props: {
+    placeId: {
+      type: [Number, String],
+      required: true,
+    },
+  },
+  computed: {
+    ...mapGetters({
+      place: 'places/place',
+    }),
   },
   methods: {
     addPhoto() {
-      this.photos.push({});
+      this.place.photos.push({ placeId: this.placeId });
     },
     removePhoto(index) {
-      this.photos.splice(index, 1);
+      this.place.photos.splice(index, 1);
     },
     onFileSelection(event, i) {
       if (event) {
         //this.fields.photos[i].img = URL.createObjectURL(event.target.files[0]);
-        this.fields.photos[i].img = URL.createObjectURL(event);
+        this.place.photos[i].img = URL.createObjectURL(event);
       } else {
-        this.fields.photos[i].img = null;
+        this.place.photos[i].img = null;
       }
     },
     save() {

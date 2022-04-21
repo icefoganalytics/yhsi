@@ -81,7 +81,10 @@
             id="legal-and-zoning"
             :place-id="id"
           />
-          <Photos id="photos" />
+          <Photos
+            id="photos"
+            :place-id="id"
+          />
           <component
             :is="managementComponent"
             id="management"

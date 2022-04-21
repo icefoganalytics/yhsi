@@ -32,24 +32,6 @@ import {
 } from '../models';
 import { NotFoundError } from '../utils/validation';
 
-// This function can go away when the back-end serves the
-// relationship data as part of the data directly.
-// e.g. { data: { names: [{ id: 1, placeId: 1, description: "SomeName" }] } }
-// instead of { data: {}, relationships: { names: { data: [{ id: 1, placeId: 1, description: "SomeName" }] } } }
-function injectRelationshipData(
-	attributes: PlainObject,
-	relationships: PlainObject
-) {
-	Object.keys(relationships).forEach((key) => {
-		if (attributes.hasOwnProperty(key)) {
-			console.error('Relationship data conflicts with source data.');
-			return;
-		}
-
-		attributes[key] = get(relationships, `${key}.data`, []);
-	});
-}
-
 export class PlaceService {
 	private db: Knex;
 	private assocationService: AssociationService;
@@ -118,7 +100,7 @@ export class PlaceService {
 		return selectStatement.then((list) => list);
 	}
 
-	async getById(id: number, user?: User) {
+	getById(id: number, user?: User) {
 		return this.db('place')
 			.first(PLACE_FIELDS)
 			.where({ id: id })
@@ -148,6 +130,7 @@ export class PlaceService {
 				);
 				place.names = await this.nameService.getFor(id);
 				place.ownerships = await this.ownershipService.getFor(id);
+				place.photos = await this.photoService.getAllForPlace(id);
 				place.recognitionDate = isNull(place.recognitionDate)
 					? null
 					: moment(place.recognitionDate).add(7, 'hours').format('YYYY-MM-DD');
@@ -158,13 +141,7 @@ export class PlaceService {
 				);
 				place.webLinks = await this.webLinkService.getForPlace(id);
 
-				const photos = await this.photoService.getAllForPlace(id);
-
-				const relationships = {
-					photos: { data: photos },
-				};
-
-				return { place, relationships };
+				return place;
 			});
 	}
 
@@ -273,10 +250,7 @@ export class PlaceService {
 				return this.db('place').where({ id }).update(encodedAttributes);
 			})
 			.then(() => {
-				return this.getById(id).then(({ place, relationships }) => {
-					injectRelationshipData(place, relationships);
-					return place;
-				});
+				return this.getById(id);
 			});
 	}
 

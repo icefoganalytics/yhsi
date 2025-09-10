@@ -72,6 +72,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.envrc
 src/api/.env
 .env.development
 .env.test
@@ -116,3 +117,4 @@ db/place_data.sql
 # Other
 package-lock.json
 .DS_Store
+.tool-versions

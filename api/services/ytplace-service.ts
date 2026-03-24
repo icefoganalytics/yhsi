@@ -12,7 +12,7 @@ import {
 	PlaceHistory,
 	YtPlace,
 	YTPLACE_FIELDS,
-} from '../data';
+} from '../db-legacy';
 import { GenericEnum } from './static-service';
 
 export class YtPlaceService {

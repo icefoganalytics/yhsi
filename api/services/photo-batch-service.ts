@@ -3,7 +3,7 @@ import _ from 'lodash';
 import db from '@/db/db-client';
 
 import { QueryStatement, SortStatement } from './';
-import { PhotoBatch, PhotoBatchPhoto, PHOTO_BATCH_FIELDS } from '../data';
+import { PhotoBatch, PhotoBatchPhoto, PHOTO_BATCH_FIELDS } from '../db-legacy';
 
 export class PhotoBatchService {
 	async getAll(skip: number, take: number): Promise<Array<any>> {

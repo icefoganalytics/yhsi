@@ -15,7 +15,7 @@ import PlacesController from '@/controllers/places-controller';
 import { PlacePolicy } from '@/policies';
 import { generatePDF } from '@/utils/pdf-generator';
 import { createThumbnail } from '@/utils/image';
-import { Photo } from '@/data/photo-entities';
+import { Photo } from '@/db-legacy/photo-entities';
 
 const placeService = new PlaceService();
 const photoService = new PhotoService();

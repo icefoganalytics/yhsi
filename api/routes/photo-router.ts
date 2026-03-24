@@ -4,7 +4,7 @@ import multer from 'multer';
 
 import db from '@/db/db-client';
 import { PhotoService, YtPlaceService, BoatService } from '../services';
-import { Photo, SavedFilter } from '../data';
+import { Photo, SavedFilter } from '../db-legacy';
 import { createThumbnail } from '../utils/image';
 import { ReturnValidationErrors } from '../middleware';
 import { authorize } from '../middleware/authorization';

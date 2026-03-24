@@ -25,7 +25,7 @@ import {
 	ThemeService,
 	WebLinkService,
 } from './';
-import { PLACE_FIELDS, REGISTER_FIELDS } from '../data';
+import { PLACE_FIELDS, REGISTER_FIELDS } from '../db-legacy';
 import { DescriptionTypeEnums, Place, PlainObject, User, UserRoles } from '../models';
 import { NotFoundError } from '../utils/validation';
 

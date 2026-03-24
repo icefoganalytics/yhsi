@@ -3,7 +3,7 @@ import { body, check, query, validationResult } from 'express-validator';
 import multer from 'multer';
 
 import { PhotoService, PhotoBatchService, SortStatement, SortDirection } from '../services';
-import { PhotoBatch, PhotoBatchPhoto } from '../data';
+import { PhotoBatch, PhotoBatchPhoto } from '../db-legacy';
 import { createThumbnail } from '../utils/image';
 import { ReturnValidationErrors } from '../middleware';
 

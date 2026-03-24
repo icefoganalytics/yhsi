@@ -9,7 +9,7 @@ import {
 	PhotoProject,
 	PlaceTheme,
 	MapSheetLookup,
-} from '../data';
+} from '../db-legacy';
 import {
 	CATEGORY_TYPES,
 	CONTRIBUTING_RESOURCE_TYPES,

@@ -7,7 +7,7 @@ import { UserRoles } from '@/models';
 import db from '@/db/db-client';
 
 import { YtPlaceService, SortDirection, SortStatement, StaticService } from '../services';
-import { AlternateName, PlaceType, FnAssociation, FirstNationName } from '../data';
+import { AlternateName, PlaceType, FnAssociation, FirstNationName } from '../db-legacy';
 import { ReturnValidationErrors } from '../middleware';
 
 const ytPlaceService = new YtPlaceService();

@@ -345,7 +345,7 @@ export class PlaceService {
 					{ status: 'StatusTable.Status' },
 					{
 						secondaryNames: db.raw(
-							`(SELECT STRING_AGG(Description, ', ') FROM dbo.Name WHERE PlaceId = Place.Id)`
+							`STUFF((SELECT ', ' + Description FROM dbo.Name WHERE PlaceId = Place.Id FOR XML PATH('')), 1, 2, '')`
 						),
 					}
 				)

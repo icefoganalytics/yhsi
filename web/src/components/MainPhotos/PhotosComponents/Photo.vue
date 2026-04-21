@@ -277,6 +277,7 @@
 <script>
 import Accordion from '../Accordion';
 import axios from 'axios';
+import { api } from '../../../controllers/config';
 import { STATIC_URL } from '../../../urls';
 
 export default {
@@ -370,8 +371,9 @@ export default {
 			if (!this.newOwnerName.trim()) return;
 			this.creatingOwner = true;
 			try {
-				const resp = await axios.post(`${STATIC_URL}/photo-owner`, { name: this.newOwnerName.trim() });
-				const newOwner = resp.data.data;
+				const resp = await api.post('/photo-owner', { name: this.newOwnerName.trim() });
+				const data = resp.data.data;
+				const newOwner = Array.isArray(data) ? data[0] : data;
 				this.ownerOptions = [...this.ownerOptions, newOwner].sort((a, b) =>
 					a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
 				);

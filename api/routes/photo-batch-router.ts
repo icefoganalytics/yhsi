@@ -101,20 +101,25 @@ photoBatchRouter.get('/:id', [check('id').notEmpty()], async (req: Request, res:
 
 photoBatchRouter.post(
 	'/',
-	[body('name').notEmpty().bail()],
+	[body('name').notEmpty().bail().trim()],
 	async (req: Request, res: Response) => {
 		try {
 			const errors = validationResult(req);
 
 			if (!errors.isEmpty()) {
-				//console.log(errors);
 				return res.status(400).json({ errors: errors.array() });
 			}
 
-			const DateCreated = new Date();
-			req.body.dateCreated = DateCreated;
+			const existing = await photoBatchService.findBatchByName(req.body.name);
+			if (existing) {
+				return res.status(409).json({
+					errors: [{ msg: `A photo batch named "${req.body.name}" already exists` }],
+				});
+			}
 
-			const result = await photoBatchService.addBatch(req.body as PhotoBatch).then((item) => item);
+			req.body.dateCreated = new Date();
+
+			const result = await photoBatchService.addBatch(req.body as PhotoBatch);
 
 			return res.json({ data: result });
 		} catch (error) {
@@ -171,34 +176,34 @@ photoBatchRouter.put(
 	'/:id',
 	[
 		check('id').notEmpty().isInt(),
-		body('communityId').notEmpty().bail().isInt(),
-		body('isOtherRecord').notEmpty().bail().isBoolean(),
-		body('originalMediaId').notEmpty().bail().isInt(),
-		body('mediaStorage').notEmpty().bail().isInt(),
-		body('copyright').notEmpty().bail().isInt(),
-		body('ownerId').notEmpty().bail().isInt(),
-		body('photoProjectId').notEmpty().bail().isInt(),
-		body('program').notEmpty().bail().isInt(),
-		body('isComplete').notEmpty().bail().isBoolean(),
-		body('isPrivate').notEmpty().bail().isBoolean(),
+		body('communityId').optional({ nullable: true }).isInt(),
+		body('isOtherRecord').optional({ nullable: true }).isBoolean(),
+		body('originalMediaId').optional({ nullable: true }).isInt(),
+		body('mediaStorage').optional({ nullable: true }).isInt(),
+		body('copyright').optional({ nullable: true }).isInt(),
+		body('ownerId').optional({ nullable: true }).isInt(),
+		body('photoProjectId').optional({ nullable: true }).isInt(),
+		body('program').optional({ nullable: true }).isInt(),
+		body('isComplete').optional({ nullable: true }).isBoolean(),
+		body('isPrivate').optional({ nullable: true }).isBoolean(),
 	],
 	async (req: Request, res: Response) => {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			//console.log(errors);
+			console.error('PhotoBatch PUT validation errors:', errors.array());
 			return res.status(400).json({ errors: errors.array() });
 		}
 
-		const result = await photoBatchService
-			.updateBatch(req.params.id, req.body as PhotoBatch)
-			.then((item) => item)
-			.catch((err) => {
-				//console.log(err);
-				return res.json({ errors: [err.originalError.info.message] });
+		try {
+			const result = await photoBatchService.updateBatch(req.params.id, req.body as PhotoBatch);
+			return res.json({ data: result });
+		} catch (err: any) {
+			console.error('PhotoBatch PUT error:', err);
+			return res.status(500).json({
+				errors: [{ message: err?.originalError?.info?.message || err?.message || 'Update failed' }],
 			});
-
-		return res.json({ data: result });
+		}
 	}
 );
 

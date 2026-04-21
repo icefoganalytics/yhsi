@@ -82,10 +82,11 @@ export default {
           this.$emit('created', resp.data.data[0].id);
         })
         .catch((err) => {
-          this.$store.commit("alerts/setText",err);
+          const msg = err?.response?.data?.errors?.[0]?.msg || err?.response?.data?.message || err?.message || 'Failed to create batch';
+          this.$store.commit("alerts/setText", msg);
           this.$store.commit("alerts/setType", "warning");
           this.$store.commit("alerts/setTimeout", 5000);
-          this.$store.commit("alerts/setAlert", true); 
+          this.$store.commit("alerts/setAlert", true);
         });
     },
     validate() {

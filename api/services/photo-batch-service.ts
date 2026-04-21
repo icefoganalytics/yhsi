@@ -132,6 +132,10 @@ export class PhotoBatchService {
 			});
 	}
 
+	async findBatchByName(name: string): Promise<PhotoBatch | undefined> {
+		return db('PhotoBatch').where({ name }).first();
+	}
+
 	async addBatch(item: PhotoBatch): Promise<PhotoBatch | undefined> {
 		const fields = _.clone(PHOTO_BATCH_FIELDS);
 		fields.push('id');

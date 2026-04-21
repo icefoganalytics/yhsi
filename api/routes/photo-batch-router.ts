@@ -196,6 +196,15 @@ photoBatchRouter.put(
 		}
 
 		try {
+			if (req.body.name) {
+				const existing = await photoBatchService.findBatchByName(req.body.name);
+				if (existing && String(existing.id) !== String(req.params.id)) {
+					return res.status(409).json({
+						errors: [{ msg: `A photo batch named "${req.body.name}" already exists` }],
+					});
+				}
+			}
+
 			const result = await photoBatchService.updateBatch(req.params.id, req.body as PhotoBatch);
 			return res.json({ data: result });
 		} catch (err: any) {

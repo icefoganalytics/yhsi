@@ -158,6 +158,7 @@ export default {
 			handler() {
 				this.$emit('featureValidChange', this.valid);
 			},
+			immediate: true,
 		},
 	},
 };

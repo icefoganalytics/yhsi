@@ -219,6 +219,7 @@ export default {
 			handler() {
 				this.$emit('siteValidChange', this.valid);
 			},
+			immediate: true,
 		},
 		menu(val) {
 			val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'));

@@ -82,7 +82,9 @@ export default {
           this.$emit('created', resp.data.data[0].id);
         })
         .catch((err) => {
-          const msg = err?.response?.data?.errors?.[0]?.msg || err?.response?.data?.message || err?.message || 'Failed to create batch';
+          const data = (err && err.response && err.response.data) || {};
+          const firstError = Array.isArray(data.errors) && data.errors.length > 0 ? data.errors[0] : null;
+          const msg = (firstError && firstError.msg) || data.message || (err && err.message) || 'Failed to create batch';
           this.$store.commit("alerts/setText", msg);
           this.$store.commit("alerts/setType", "warning");
           this.$store.commit("alerts/setTimeout", 5000);

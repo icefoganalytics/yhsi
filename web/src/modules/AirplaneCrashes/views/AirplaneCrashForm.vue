@@ -658,17 +658,22 @@ export default {
 		},
 		async downloadPdf() {
 			this.loadingPdf = true;
-			let res = await aircrash.getPdf(parseInt(this.crashID));
-			let blob = new Blob([res], { type: 'application/octetstream' });
-			let url = window.URL || window.webkitURL;
-			let link = url.createObjectURL(blob);
-			let a = document.createElement('a');
-			a.setAttribute('download', `Aircrash.pdf`); //`Boat-${this.fields.Name}.pdf`
-			a.setAttribute('href', link);
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			this.loadingPdf = false;
+			try {
+				const res = await aircrash.getPdf(parseInt(this.crashID));
+				const blob = new Blob([res], { type: 'application/pdf' });
+				const url = window.URL || window.webkitURL;
+				const link = url.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.setAttribute('download', `Aircrash-${this.crashID}.pdf`);
+				a.setAttribute('href', link);
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+			} catch (err) {
+				console.error('Failed to download PDF', err);
+			} finally {
+				this.loadingPdf = false;
+			}
 		},
 	},
 	computed: {

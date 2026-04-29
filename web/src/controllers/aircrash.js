@@ -184,16 +184,11 @@ export default {
 			});
 	},
 	async getPdf(id) {
-		return await api({
+		const res = await api({
 			url: `aircrash/pdf/${id}`,
 			method: 'POST',
 			responseType: 'blob',
-		})
-			.then((res) => {
-				return res.data;
-			})
-			.catch((err) => {
-				return err;
-			});
+		});
+		return res.data;
 	},
 };

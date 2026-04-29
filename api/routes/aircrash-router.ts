@@ -218,53 +218,65 @@ aircrashRouter.get(
 //PDFS
 aircrashRouter.post(
 	'/pdf/:aircrashId',
+	authorize(airCrashViewers),
 	[param('aircrashId').notEmpty()],
 	ReturnValidationErrors,
 	async (req: Request, res: Response) => {
-		const { aircrashId } = req.params;
+		try {
+			const { aircrashId } = req.params;
+			const aircrash = await aircrashService.getById(aircrashId);
 
-		const aircrash = await aircrashService.getById(aircrashId);
+			if (!aircrash) {
+				return res.status(404).send({ message: 'Data not found' });
+			}
+			const data = renderFile('./templates/aircrashes/aircrashView.pug', {
+				data: aircrash,
+			});
 
-		if (!aircrash) {
-			res.status(404).send({ message: 'Data not found' });
-			return;
+			const pdf = await generatePDF(data);
+			res.setHeader('Content-disposition', `attachment; filename="aircrash-${aircrashId}.pdf"`);
+			res.setHeader('Content-type', 'application/pdf');
+			res.send(pdf);
+		} catch (err: any) {
+			console.error('Aircrash PDF error:', err);
+			res.status(500).json({ message: err?.message || 'PDF generation failed' });
 		}
-		// Compile template.pug, and render a set of data
-		const data = renderFile('./templates/aircrashes/aircrashView.pug', {
-			data: aircrash,
-		});
-
-		const pdf = await generatePDF(data);
-		res.setHeader('Content-disposition', 'attachment; filename="burials.html"');
-		res.setHeader('Content-type', 'application/pdf');
-		res.send(pdf);
 	}
 );
 
-aircrashRouter.post('/pdf', async (req: Request, res: Response) => {
-	const { page = 1, limit = 0, filters = {} } = req.body;
-	const aircrashes = await aircrashService.doSearch(page, limit, filters);
+aircrashRouter.post('/pdf', authorize(airCrashViewers), async (req: Request, res: Response) => {
+	try {
+		const { page = 1, limit = 0, filters = {} } = req.body;
+		const aircrashes = await aircrashService.doSearch(page, limit, filters);
 
-	// Compile template.pug, and render a set of data
-	const data = renderFile('./templates/aircrashes/aircrashGrid.pug', {
-		data: aircrashes.body,
-	});
+		const data = renderFile('./templates/aircrashes/aircrashGrid.pug', {
+			data: aircrashes.body,
+		});
 
-	const pdf = await generatePDF(data);
-	res.setHeader('Content-disposition', 'attachment; filename="burials.html"');
-	res.setHeader('Content-type', 'application/pdf');
-	res.send(pdf);
+		const pdf = await generatePDF(data);
+		res.setHeader('Content-disposition', 'attachment; filename="aircrashes.pdf"');
+		res.setHeader('Content-type', 'application/pdf');
+		res.send(pdf);
+	} catch (err: any) {
+		console.error('Aircrash grid PDF error:', err);
+		res.status(500).json({ message: err?.message || 'PDF generation failed' });
+	}
 });
 
-aircrashRouter.post('/export', async (req: Request, res: Response) => {
-	const { page = 1, limit = 0, filters = {} } = req.body;
+aircrashRouter.post('/export', authorize(airCrashViewers), async (req: Request, res: Response) => {
+	try {
+		const { page = 1, limit = 0, filters = {} } = req.body;
 
-	const aircrashes = await aircrashService.doSearch(page, limit, filters);
-	const json2csvParser = new Parser();
+		const aircrashes = await aircrashService.doSearch(page, limit, filters);
+		const json2csvParser = new Parser();
 
-	const csv = json2csvParser.parse(aircrashes.body);
-	res.setHeader('Content-Type', 'text/csv');
-	res.attachment('boats.csv').send(csv);
+		const csv = json2csvParser.parse(aircrashes.body);
+		res.setHeader('Content-Type', 'text/csv');
+		res.attachment('aircrashes.csv').send(csv);
+	} catch (err: any) {
+		console.error('Aircrash export error:', err);
+		res.status(500).json({ message: err?.message || 'Export failed' });
+	}
 });
 
 aircrashRouter.post(

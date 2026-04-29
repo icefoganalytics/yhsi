@@ -342,6 +342,7 @@ export default {
 			handler() {
 				this.$emit('photoValidChange', this.valid);
 			},
+			immediate: true,
 		},
 	},
 	methods: {

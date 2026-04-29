@@ -43,7 +43,8 @@ export default {
       this.history = store.getters.siteHistory
     },
     openSite(item) {
-      this.$router.push(`/sites/${item.id}/summary`);
+      this.drawer = false;
+      this.$router.push(`/sites/${item.id}`);
     }
   },
 };

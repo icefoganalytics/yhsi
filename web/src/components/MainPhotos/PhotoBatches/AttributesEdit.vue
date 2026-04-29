@@ -346,9 +346,14 @@ export default {
 		saveChanges() {
 			if (!this.valid) {
 				this.runFormValidations();
-				this.$store.commit('alerts/setText', 'Fill in all required fields');
+				const missing = [];
+				if (!this.featureValid) missing.push('Feature');
+				if (!this.siteValid) missing.push('Historic Sites');
+				if (!this.photoValid) missing.push('Photo');
+				const detail = missing.length > 0 ? ` (check: ${missing.join(', ')})` : '';
+				this.$store.commit('alerts/setText', `Fill in all required fields${detail}`);
 				this.$store.commit('alerts/setType', 'warning');
-				this.$store.commit('alerts/setTimeout', 5000);
+				this.$store.commit('alerts/setTimeout', 8000);
 				this.$store.commit('alerts/setAlert', true);
 				return null;
 			}

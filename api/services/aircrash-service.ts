@@ -48,7 +48,7 @@ export class AircrashService {
 		// _TODO_ move into base-controller.ts
 		const MAX_PER_PAGE = 1000;
 		let limit = 0;
-		if (perPage === -1) {
+		if (perPage === -1 || perPage === 0) {
 			limit = MAX_PER_PAGE;
 		} else {
 			limit = Math.max(1, Math.min(perPage, MAX_PER_PAGE));

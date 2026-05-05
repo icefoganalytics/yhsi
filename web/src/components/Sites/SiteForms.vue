@@ -226,17 +226,14 @@ export default {
 		},
 	},
 	mounted() {
-		this.initializePlace(this.id)
-			.then((place) => {
-				this.addSiteHistory(place);
-				if (this.$route.hash) {
-					goTo(this.$route.hash, { offset: 75 });
-				}
-			})
-			.catch((error) => {
-				console.log('ERROR LOADING PLACE', error.message);
-				this.$router.push('/sites');
-			});
+		this.loadPlace(this.id);
+	},
+	watch: {
+		id(newId, oldId) {
+			if (newId !== oldId) {
+				this.loadPlace(newId);
+			}
+		},
 	},
 	methods: {
 		...mapActions({
@@ -244,6 +241,19 @@ export default {
 			addSiteHistory: 'addSiteHistory',
 			deletePlace: 'places/delete',
 		}),
+		loadPlace(id) {
+			this.initializePlace(id)
+				.then((place) => {
+					this.addSiteHistory(place);
+					if (this.$route.hash) {
+						goTo(this.$route.hash, { offset: 75 });
+					}
+				})
+				.catch((error) => {
+					console.log('ERROR LOADING PLACE', error.message);
+					this.$router.push('/sites');
+				});
+		},
 		showDialog() {
 			this.dialog = true;
 		},

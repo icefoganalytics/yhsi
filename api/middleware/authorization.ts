@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { User, UserRoles } from '../models';
+import { isNil } from 'lodash';
+
+import { User, UserRoles } from '@/models';
 
 const USER_ACTIVE_STATUS = 'Active';
 
@@ -36,16 +38,23 @@ function roleListFor(user: User): string[] {
 
 export function authorize(roles: string[] = [], allowPending = false) {
 	return (req: Request, res: Response, next: NextFunction) => {
-		const currentUser = req.user as User;
+		const currentUser = req.user as User | undefined | null;
+		if (isNil(currentUser)) {
+			return res.status(403).json({ message: 'Unauthorized - User is nil' });
+		}
 
-		if (!req.oidc.isAuthenticated() || !currentUser)
+		if (!req.oidc.isAuthenticated() && !req.isServiceAccount) {
 			return res.status(401).send('Not authenticated');
+		}
 
-		if (currentUser.status != USER_ACTIVE_STATUS && !allowPending)
+		if (currentUser.status != USER_ACTIVE_STATUS && !allowPending) {
 			return res.status(403).json({ message: 'Unauthorized - User inactive' });
+		}
 
 		// if route only requires an active user
-		if (roles.length == 0) return next();
+		if (roles.length == 0) {
+			return next();
+		}
 
 		// Match whole roles only. `roles` is a comma-delimited string, so testing
 		// it with indexOf lets a substring match through - "Site Viewer Limited"

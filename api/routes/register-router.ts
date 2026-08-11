@@ -63,6 +63,8 @@ registerRouter.get('/:id', async (req: Request, res: Response) => {
 	data.descBoundFr = '';
 	data.additionalInfoEn = '';
 	data.additionalInfoFr = '';
+	data.culturalHistoryEn = '';
+	data.culturalHistoryFr = '';
 
 	const descs = await descriptionService.getForPlace(parseInt(id));
 
@@ -82,6 +84,9 @@ registerRouter.get('/:id', async (req: Request, res: Response) => {
 		} else if (desc.type == 30) {
 			data.additionalInfoEn = desc.descriptionText;
 			data.additionalInfoFr = desc.fR_DescriptionText;
+		}else if (desc.type == 12) {
+			data.culturalHistoryEn = desc.descriptionText;
+			data.culturalHistoryFr = desc.fR_DescriptionText;
 		}
 	}
 

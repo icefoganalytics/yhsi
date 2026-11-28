@@ -1,13 +1,22 @@
-FROM node:16
+FROM node:24.22.2-alpine3.23
+
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 RUN mkdir -p /usr/src/api
 WORKDIR /usr/src/api
 
 COPY package*.json ./
 
-# Fix install permissions for "sharp"
-RUN chown root:root .
-RUN npm install
+RUN npm clean-install
 
 COPY . .
 

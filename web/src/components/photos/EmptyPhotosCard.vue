@@ -7,8 +7,8 @@
       <v-img
         height="200"
         width="200"
-        :src="require('../../assets/add_photo.png')"
-        :lazy-src="require('../../assets/add_photo.png')"
+        :src="addPhotoImageUrl"
+        :lazy-src="addPhotoImageUrl"
       ></v-img>
     </div>
 
@@ -25,8 +25,13 @@
 </template>
 
 <script>
+import addPhotoImageUrl from "@/assets/add_photo.png"
+
 export default {
   name: "EmptyPhotosCard",
+  data: () => ({
+    addPhotoImageUrl,
+  }),
 }
 </script>
 

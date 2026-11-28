@@ -49,7 +49,7 @@
         <v-img
           class="mr-auto ml-auto"
           max-width="128"
-          :src="require('../../../assets/add_photo.png')"
+          :src="addPhotoImageUrl"
         >
         </v-img>
 
@@ -160,6 +160,7 @@
 import axios from "axios"
 import { mapGetters } from "vuex"
 
+import addPhotoImageUrl from "../../../assets/add_photo.png"
 import { PHOTO_BATCH_URL } from "../../../urls"
 
 import Feature from "../PhotosComponents/Feature"
@@ -171,6 +172,7 @@ export default {
   name: "PhotoBatchAttributes",
   components: { Feature, SiteRecord, HistoricSites, Photo },
   data: () => ({
+    addPhotoImageUrl,
     photos: [],
     displayName: null,
     infoLoaded: false,

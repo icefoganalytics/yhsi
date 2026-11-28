@@ -224,6 +224,9 @@
 /* eslint-disable */
 import { latLng, Icon } from "leaflet"
 import "leaflet/dist/leaflet.css"
+import markerIcon2xUrl from "leaflet/dist/images/marker-icon-2x.png"
+import markerIconUrl from "leaflet/dist/images/marker-icon.png"
+import markerShadowUrl from "leaflet/dist/images/marker-shadow.png"
 import {
   LMap,
   LTileLayer,
@@ -369,9 +372,9 @@ export default {
       //This code snippet fixes an issue where the marker icons dont appear (according to the vueleaflet docs)
       delete Icon.Default.prototype._getIconUrl
       Icon.Default.mergeOptions({
-        iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-        iconUrl: require("leaflet/dist/images/marker-icon.png"),
-        shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+        iconRetinaUrl: markerIcon2xUrl,
+        iconUrl: markerIconUrl,
+        shadowUrl: markerShadowUrl,
       })
     },
     recenterMap() {

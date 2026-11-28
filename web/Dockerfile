@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:24.22.2-alpine3.23
 
 # install simple http server for serving static content
 RUN npm install -g http-server
@@ -10,14 +10,13 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install -g @vue/cli
 RUN npm install
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 
 # build app for production with minification
-RUN npm run build:web
+RUN npm run build
 
 EXPOSE 8080
 CMD [ "http-server", "dist" ]

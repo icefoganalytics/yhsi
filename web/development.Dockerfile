@@ -1,13 +1,12 @@
-FROM node:16-alpine3.15
+FROM node:24.22.2-alpine3.23
 
 RUN mkdir -p /usr/src/web
 WORKDIR /usr/src/web
 
 COPY package*.json ./
 
-RUN npm install -g @vue/cli
-RUN npm install
+RUN npm clean-install
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"]

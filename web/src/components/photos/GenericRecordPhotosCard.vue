@@ -21,8 +21,8 @@ Supported records:
         <v-img
           height="200"
           width="200"
-          :src="require('../../assets/add_photo.png')"
-          :lazy-src="require('../../assets/add_photo.png')"
+          :src="addPhotoImageUrl"
+          :lazy-src="addPhotoImageUrl"
         ></v-img>
       </div>
       <div v-else>
@@ -91,6 +91,7 @@ Supported records:
 <script>
 import { isNil } from "lodash"
 
+import addPhotoImageUrl from "@/assets/add_photo.png"
 import photos from "@/controllers/photos"
 
 import GenericRecordAddOrLinkPhotoDialog from "@/components/photos/GenericRecordAddOrLinkPhotoDialog.vue"
@@ -116,6 +117,7 @@ export default {
     },
   },
   data: () => ({
+    addPhotoImageUrl,
     photos: [],
     selectedPhoto: 0,
     loading: false,

@@ -6,9 +6,9 @@
 
 ## Tech Stack
 
-- **API** (`/api`): Node.js + Express 4 + TypeScript, port 3000
-- **Frontend** (`/web`): Vue 2.6 + Vuetify 2.6 + Vuex 3 + Vue Router 3, port 8080
-- **Database**: Microsoft SQL Server (MSSQL) via Knex.js query builder
+- **API** (`/api`): Node.js 24 + Express 4 + TypeScript, port 3000
+- **Frontend** (`/web`): Vue 2.7 + Vuetify 2.6 + Vuex 3 + Vue Router 3, built with Vite, port 8080
+- **Database**: Microsoft SQL Server (MSSQL) via Knex.js 3 query builder (`tedious` driver)
 - **Auth**: OIDC/OAuth via `express-openid-connect`
 - **Maps**: Leaflet + ESRI ArcGIS (esri-loader)
 - **Monitoring**: Sentry / GlitchTip
@@ -112,7 +112,7 @@ npm run start               # ts-node-dev on port 3000
 # Frontend standalone
 cd web
 npm install
-npm run start               # Vue CLI dev server on port 8080
+npm run start               # Vite dev server on port 8080
 
 # Development database migrations (also run by development Compose boot)
 cd api
@@ -120,7 +120,7 @@ npm run knex -- migrate:latest
 
 # Build
 cd api && npm run build     # TypeScript compile + tsc-alias
-cd web && npm run build:web # Vue CLI production build
+cd web && npm run build     # Vite production build
 
 # Lint
 cd web && npm run lint

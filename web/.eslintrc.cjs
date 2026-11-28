@@ -2,12 +2,12 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es6: true,
+    es2022: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:vue/recommended", "prettier", "prettier/vue"],
+  extends: ["eslint:recommended", "plugin:vue/recommended", "prettier"],
   parserOptions: {
-    parser: "babel-eslint",
+    ecmaVersion: "latest",
     sourceType: "module",
   },
   rules: {

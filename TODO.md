@@ -102,14 +102,6 @@ These are discrepancies between the production database schema (the Knex baselin
 
 ## 3. Critical: EOL Infrastructure
 
-### 3.1 Node.js 16 — EOL September 2023
-
-- **Files:** `Dockerfile:1`, `api/development.Dockerfile`, `web/development.Dockerfile`
-- **Current:** `node:16-alpine3.15`
-- **Target:** Node 20 LTS (or Node 22 LTS)
-- **Impact:** No security patches for 2+ years
-- **See:** [Upgrade Plan 9.1](#91-node-20-upgrade)
-
 ### 3.2 MSSQL Server 2017 — EOL October 2022
 
 - **Files:** `docker-compose.dev.yml`, `docker-compose.development.yml`, `docker-compose.test.yml`
@@ -118,18 +110,6 @@ These are discrepancies between the production database schema (the Knex baselin
 - **Impact:** No security patches for 3+ years
 - **See:** [Upgrade Plan 9.2](#92-mssql-2022-upgrade)
 
-### 3.3 npm 8 Pinned in Dockerfile
-
-- **File:** `Dockerfile:20`
-- **Current:** `npm install -g npm@8.5.5`
-- **Target:** Remove pin (use npm bundled with Node 20/22) or pin to npm 10+
-
-### 3.4 Legacy API Dockerfile with Node 13
-
-- **File:** `api/Dockerfile` (uses `oraclelinux:7-slim` + Node 13)
-- **Status:** Node 13 EOL June 2020; appears to be dead/legacy code
-- **Action:** Confirm unused and delete, or replace
-
 ---
 
 ## 4. High: EOL Libraries
@@ -137,7 +117,7 @@ These are discrepancies between the production database schema (the Knex baselin
 ### 4.1 Vue 2 — EOL December 2023
 
 - **File:** `web/package.json`
-- **Current:** Vue 2.6.11, Vue Router 3.2.0, Vuex 3.4.0, Vuetify 2.6.4, @vue/cli 4.5.0
+- **Current:** Vue 2.7.16, Vue Router 3.2.0, Vuex 3.4.0, Vuetify 2.6.4, built with Vite 7
 - **Target:** Vue 3 + Vue Router 4 + Pinia + Vuetify 3 + Vite
 - **Impact:** Major migration effort. No security patches on Vue 2.
 - **See:** [Upgrade Plan 9.3](#93-vue-3-migration)
@@ -155,12 +135,6 @@ These are discrepancies between the production database schema (the Knex baselin
 - **Current latest:** 1.7+
 - **Issue:** Known vulnerabilities in 0.x series
 - **Action:** Upgrade to 1.7+. API changes are minimal but check interceptor usage.
-
-### 4.4 babel-eslint — Deprecated
-
-- **File:** `web/package.json` (v10.1.0)
-- **Issue:** Package renamed to `@babel/eslint-parser`
-- **Action:** Replace with `@babel/eslint-parser` (or remove entirely when migrating to Vue 3 + Vite)
 
 ---
 
@@ -241,29 +215,24 @@ Four different response wrapper patterns are used across the API:
 | Package           | Current | Latest   | Notes                                |
 | ----------------- | ------- | -------- | ------------------------------------ |
 | express           | 4.17.1  | 4.21+    | 3+ years of security patches missing |
-| puppeteer         | 19.8.0  | 22+      | Multiple majors behind               |
-| sharp             | 0.30.5  | 0.33+    | Pinned, 18+ months behind            |
 | helmet            | 5.0.2   | 7+       | Functional but outdated              |
-| knex              | 1.0.4   | 3+       | Major version behind                 |
-| typescript (api)  | 4.6.3   | 5.5+     | Major version behind                 |
 | typescript (root) | 4.5.4   | 5.5+     | Major version behind                 |
-| @types/node       | 14.14.5 | 20+      | Severely outdated                    |
 | @types/express    | 4.17.13 | 4.17.21+ | 3+ years behind                      |
 
 ### 6.2 Frontend Dependencies
 
-| Package           | Current    | Latest | Notes                   |
-| ----------------- | ---------- | ------ | ----------------------- |
-| html2canvas       | 1.0.0-rc.7 | 1.4+   | RC build in production  |
-| jspdf             | 2.3.1      | 2.5+   | Minor behind            |
-| eslint (web)      | 6.7.2      | 9+     | 3 major versions behind |
-| eslint-plugin-vue | 6.2.2      | 9+     | 3 major versions behind |
+| Package           | Current    | Latest | Notes                  |
+| ----------------- | ---------- | ------ | ---------------------- |
+| html2canvas       | 1.0.0-rc.7 | 1.4+   | RC build in production |
+| jspdf             | 2.3.1      | 2.5+   | Minor behind           |
+| eslint (web)      | 8.57.1     | 9+     | 1 major version behind |
+| eslint-plugin-vue | 9.33.0     | 10+    | 1 major version behind |
 
 ### 6.3 ESLint Version Fragmentation
 
 - Root: v9.12.0
 - API: v8.13.0
-- Web: v6.7.2
+- Web: v8.57.1
 - **Fix:** Unify to ESLint 9 with flat config across all packages
 
 ---
@@ -334,20 +303,6 @@ Remove these commented-out blocks:
 
 ## 9. Upgrade Plans
 
-### 9.1 Node 20 Upgrade
-
-**Scope:** All Dockerfiles + CI/CD
-
-1. Update `Dockerfile:1` from `node:16-alpine3.15` to `node:20-alpine`
-2. Update `api/development.Dockerfile` to `node:20`
-3. Update `web/development.Dockerfile` to `node:20`
-4. Remove `RUN npm install -g npm@8.5.5` from Dockerfile (Node 20 ships with npm 10)
-5. Run `npm install` in all three package roots to regenerate lock files
-6. Test for breaking changes in native modules (sharp, mssql, puppeteer)
-7. Update Puppeteer + Chromium compatibility (alpine Chromium version must match puppeteer)
-
-**Risk:** Medium — native modules (sharp, mssql) may need version bumps. Puppeteer/Chromium pairing is fragile on Alpine.
-
 ### 9.2 MSSQL 2022 Upgrade
 
 **Scope:** Docker Compose files (dev/test only — prod DB is managed externally)
@@ -368,19 +323,17 @@ Remove these commented-out blocks:
 
 1. Install `@vue/compat` to enable Vue 2.7 compatibility mode
 2. Replace Vuex with Pinia (Pinia supports both Vue 2.7 and Vue 3)
-3. Replace `babel-eslint` with `@babel/eslint-parser`
-4. Upgrade axios to 1.7+
-5. Eliminate all `this.$refs` anti-patterns
-6. Standardize all components to use consistent Options API patterns
+3. Upgrade axios to 1.7+
+4. Eliminate all `this.$refs` anti-patterns
+5. Standardize all components to use consistent Options API patterns
 
 **Phase 2 — Vue 3 Migration:**
 
 1. Upgrade to Vue 3 + `@vue/compat`
 2. Migrate Vue Router 3 → 4
 3. Upgrade Vuetify 2 → 3 (this is the hardest part — significant API changes)
-4. Replace Vue CLI / Webpack with Vite
-5. Convert Pug templates to HTML (optional but recommended for Vite compatibility)
-6. Remove `@vue/compat` once all warnings are resolved
+4. Convert Pug templates to HTML (optional)
+5. Remove `@vue/compat` once all warnings are resolved
 
 **Phase 3 — Modernization:**
 
@@ -408,16 +361,11 @@ Remove these commented-out blocks:
 
 **Current issues with `Dockerfile`:**
 
-- Node 16 base
-- npm 8 pinned
-- Commented-out sharp workaround
 - No multi-stage build (builds web + api in one image)
 - No `.dockerignore` best practices visible
 
 **Target Dockerfile pattern:**
 
-1. Use Node 20 Alpine base
-2. Multi-stage build: build stage (compile TS + Vue) → production stage (minimal runtime)
-3. Remove npm pin
-4. Add proper `.dockerignore` if missing
-5. Consider separating web build from API image for better caching
+1. Multi-stage build: build stage (compile TS + Vue) → production stage (minimal runtime)
+2. Add proper `.dockerignore` if missing
+3. Consider separating web build from API image for better caching

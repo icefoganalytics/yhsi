@@ -10,5 +10,5 @@ export async function generatePDF(
   await page.setContent(content)
   const pdf = await page.pdf({ format, landscape })
   await browser.close()
-  return Promise.resolve(pdf)
+  return Buffer.from(pdf)
 }
